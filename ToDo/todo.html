@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HTML Todo List | Major Project</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    .table th, .table td {
+      vertical-align: middle;
+    }
+    .table td:last-child {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a href="#" class="navbar-brand">
+        <img src="assets/logo.png" class="img-fluid" alt="logo" width="150">
+      </a>
+      <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbar">
+        <div class="navbar-nav ms-auto">
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="container p-5">
+    <div class="mb-3">
+      <button type="button" class="btn btn-outline-primary" onclick="showAddTaskModal()">Add Task</button>
+    </div>
+    <div class="d-flex justify-content-center">
+      <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <table class="table table-hover">
+              <thead class="text-center">
+                <tr>
+                  <th>#</th>
+                  <th>Task/Description</th>
+                  <th>Responsible</th>
+                  <th>ETA</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody class="text-center" id="taskTableBody">
+                <!-- Tasks will be added here dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="addTaskModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+      <form id="taskInputForm">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addTaskModalLabel">Add Task</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="addTaskTextArea" class="form-label">Task/Description</label>
+                <textarea class="form-control" id="addTaskTextArea" name="taskDescription" rows="3" placeholder="Add your Task/Description"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="addResponsiblePerson" class="form-label">Responsible</label>
+                <input type="text" class="form-control" id="addResponsiblePerson" name="taskResponsiblePerson" placeholder="Add the Responsible Person's name">
+              </div>
+              <div class="mb-3">
+                <label for="addETA" class="form-label">ETA</label>
+                <input type="datetime-local" class="form-control" id="addETA" name="taskETA">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" onclick="addTask()">Add Task</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
+  <script>
+    function showAddTaskModal() {
+      $("#addTaskModal").modal('show');
+    }
+
+    function addTask() {
+      const taskDescription = document.getElementById("addTaskTextArea").value;
+      const taskResponsiblePerson = document.getElementById("addResponsiblePerson").value;
+      const taskETA = document.getElementById("addETA").value;
+
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+        <td>${document.getElementById("taskTableBody").children.length + 1}</td>
+        <td>${taskDescription}</td>
+        <td>${taskResponsiblePerson}</td>
+        <td>${taskETA}</td>
+        <td>
+          <i class="bi bi-check-circle-fill text-success me-2" onclick="markAsDone(this)"></i>
+          <i class="bi bi-pencil-square text-primary" onclick="editTask(this)"></i>
+        </td>
+      `;
+
+      document.getElementById("taskTableBody").appendChild(newRow);
+      $("#addTaskModal").modal('hide');
+      document.getElementById("taskInputForm").reset();
+    }
+
+    function markAsDone(element) {
+      const row = element.closest('tr');
+      row.classList.toggle('table-success');
+    }
+
+    function editTask(element) {
+      const row = element.closest('tr');
+      const cells = row.getElementsByTagName('td');
+      document.getElementById("addTaskTextArea").value = cells[1].textContent;
+      document.getElementById("addResponsiblePerson").value = cells[2].textContent;
+      document.getElementById("addETA").value = cells[3].textContent;
+
+      showAddTaskModal();
+
+      row.remove();
+    }
+  </script>
+</body>
+</html>
